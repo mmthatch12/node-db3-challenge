@@ -11,10 +11,20 @@ module.exports = {
 
 function find() {
     return db('schemes')
+        .then(schemes => {
+            return schemes
+        })
 }
 
 function findById(id) {
     return db('schemes').where({ id }).first()
+        .then(scheme => {
+            if(scheme){
+                return scheme
+            } else {
+                return null
+            }
+        })
 }
 
 function findSteps(id) {
@@ -36,8 +46,13 @@ function add(scheme) {
         })
 }
 
-function update(id, changes) {
-
+function update(changes, id) {
+    return db('schemes')
+        .where('id', id)
+        .update(changes)
+        .then(count => {
+            return count
+        })
 }
 
 function remove(id) {
