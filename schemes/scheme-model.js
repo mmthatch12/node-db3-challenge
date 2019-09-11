@@ -21,7 +21,7 @@ function findSteps(id) {
     return db('schemes as s')
         .join('steps as st', 's.id', '=', 'st.scheme_id')
         .where({ scheme_id: id })
-        .select('s.id as Schemes Id', 's.scheme_name', 'st.step_number', 'st.instructions' )
+        .select('s.scheme_name', 'st.step_number', 'st.instructions' )
         .orderBy('st.step_number', 'asc')
         .then(schemes => {
             return schemes
@@ -29,7 +29,11 @@ function findSteps(id) {
     }
 
 function add(scheme) {
-
+    return db('schemes')
+        .insert(scheme)
+        .then(([scheme]) => {
+            return scheme
+        })
 }
 
 function update(id, changes) {
