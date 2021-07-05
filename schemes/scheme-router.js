@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/', (req, res) => {
   Schemes.find()
   .then(schemes => {
-    res.json(schemes);
+    res.status(200).json(schemes);
   })
   .catch(err => {
     res.status(500).json({ message: 'Failed to get schemes' });
@@ -42,6 +42,7 @@ router.get('/:id/steps', (req, res) => {
     }
   })
   .catch(err => {
+    console.log(err)
     res.status(500).json({ message: 'Failed to get steps' });
   });
 });
@@ -94,6 +95,7 @@ router.put('/:id', (req, res) => {
     }
   })
   .catch (err => {
+    console.log(err)
     res.status(500).json({ message: 'Failed to update scheme' });
   });
 });
@@ -110,8 +112,30 @@ router.delete('/:id', (req, res) => {
     }
   })
   .catch(err => {
+    console.log(err)
     res.status(500).json({ message: 'Failed to delete scheme' });
   });
 });
+
+router.post('/:id/addstep', (req, res) => {
+  const {id} = req.params
+  const stepBody = req.body
+
+  Schemes.findById(id)
+    .then(scheme => {
+      if(scheme){
+        Schemes.addStep(stepBody)
+          .then(step => {
+            res.status(201).json(step)
+          })
+          .catch(error => {
+            console.log(error)
+            res.status(500).json({ error: "Could not create step"})
+          })
+      } else {
+        res.status(400).json({ message: 'Scheme with that Id does not exist' })
+      }
+    })
+})
 
 module.exports = router;
